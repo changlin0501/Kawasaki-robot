@@ -103,19 +103,17 @@ namespace MVC.Common
 								//错误状态
 								item.Status = Robot.RobotStatus.Error;
 								throw;
-
 							}
 							finally
 							{
+
 								if (RobotOperationHandler.CheckCommu(commu))
 								{
 									commu.disconnect();
-
 								}
 								//清除变量
 								if (commu != null) commu.Dispose();
 							}
-
 						}
 					}));
 					t.Name = robotID;
@@ -130,6 +128,11 @@ namespace MVC.Common
 				//Common.LogHandler.WriteLog("机器人状态错误 原因是：" + ex.Message, ex);
 				throw ex;
 			}
+		}
+
+		public List<Models.RobotEntity> dd()
+		{
+			return MC_AllMachineList;
 		}
 
 	}

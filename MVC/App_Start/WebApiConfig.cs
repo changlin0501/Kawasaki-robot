@@ -13,10 +13,9 @@ namespace MVC
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi", //name在一个项目中重复
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "api/{controller}/{action}/{id}",//增加过action
                 defaults: new { id = RouteParameter.Optional }
             );
-
         }
     }
 }

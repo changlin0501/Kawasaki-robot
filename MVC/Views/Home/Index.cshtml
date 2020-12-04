@@ -4,56 +4,79 @@
 
 @Scripts.Render("~/Scripts/jquery-3.3.1.js")
 
-<script type="text/javascript">
-    var ws;
-    $(
-        function () {
-            $("#btnConnect").click(function () {
-                $("#messageSpan").text("Connection...");
-                ws = new WebSocket("ws://" + window.location.hostname +":"+window.location.port+ "/api/WSChat");
-                ws.onopen = function () {
-                    $("#messageSpan").text("Connected!");
-                };
-                ws.onmessage = function (result) {
-                    $("#messageSpan").text(result.data);
-                };
-                ws.onerror = function (error) {
-                    $("#messageSpan").text(error.data);
-                };
-                ws.onclose = function () {
-                    $("#messageSpan").text("Disconnected!");
-                };
-            });
-            $("#btnSend").click(function () {
-                if (ws.readyState == WebSocket.OPEN) {
-                    ws.send($("#txtInput").val());
-                }
-                else {
-                    $("messageSpan").text("Connection is Closed!");
-                }
-            });
-            $("#btnDisconnect").click(function () {
-                ws.close();
-            });
+<script>
+    var webSocket;
+
+    function sendSocketMsg() {
+        var msg = $("#msg").val();
+        webSocket.send(msg);
+        showMsg(msg, "blue");
+    }
+
+    function openSocket() {
+        if (webSocket != null && typeof (webSocket) != "undefined") {
+            closeSocket();
         }
-    );
+        webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/api/msg");
+        webSocket.onopen = function () {
+            showMsg("连接建立");
+        }
+        webSocket.onerror = function () {
+            showMsg("发生异常");
+        }
+
+        webSocket.onmessage = function (event) {
+            showMsg(event.data, "yellow");
+        }
+
+        webSocket.onclose = function () { showMsg("连接关闭"); }
+    }
+
+    function closeSocket() {
+        if (webSocket != null && typeof (webSocket) != "undefined") {
+            webSocket.close();
+        }
+    }
+
+    function showMsg(msg, type) {
+        if (type === null || typeof (type) === "undefined") type = "gray";
+        $("#show").append("<span class='" + type + "'>" + msg + "</span><br>");
+    }
 </script>
 
+<style>
+    #show {
+        border: 1px solid #ff6a00;
+        padding: 10px;
+    }
+
+    .blue {
+        border: 1px solid #0094ff;
+    }
+
+    .yellow {
+        margin-left: 300px;
+        border: 1px solid #b6ff00;
+    }
+
+    .gray {
+        font-size: 10px;
+        border: 1px solid #a9a9a9;
+    }
+</style>
 
 <div class="jumbotron">
     <h1>ASP.NET</h1>
     <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
     <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-    <fieldset>
-        <input type="button" value="Connect" id="btnConnect" />
-        <input type="button" value="DisConnect" id="btnDisConnect" />
+ 
+        <button onclick="openSocket()">建立连接</button>
+        <button onclick="closeSocket()">断开连接</button>
         <hr />
-        <input type="text" id="txtInput" />
-        <input type="button" value="Send" id="btnSend" />
-        <br />
-        <span id="messageSpan" style="color:red;"></span>
-    </fieldset>
-
+        <input type="text" id="msg" />
+        <button onclick="sendSocketMsg()">发送信息</button>
+        <hr />
+        <div id="show"></div>
 </div>
 
 <div class="row">

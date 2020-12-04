@@ -1,9 +1,12 @@
 ﻿using FluentScheduler;
 using MVC.Common;
-using MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -65,10 +68,11 @@ namespace MVC
 			//机器人状态查询触发器
 			MC_RobotStatusTrigger = new Common.RobotStatusTrigger(MC_AllMachineList);
 			MC_RobotStatusTrigger.StartTrigger();
-
-			AutoMapperConfig.Config();
-			//GetMapper();
+			Models.Test.MC_AllMachineList = MC_AllMachineList;
 		}
+
+		//AutoMapperConfig.Config();
+		//GetMapper();
 
 		public ActionResult GetMapper()
 		{
@@ -99,6 +103,5 @@ namespace MVC
 			//return Json(Output, JsonRequestBehavior.AllowGet);
 			return null;
 		}
-
 	}
 }
